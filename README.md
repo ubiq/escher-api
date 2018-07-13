@@ -16,9 +16,11 @@ go build
 
 Configure via config.toml
 
-port: port to listen on
-server: mongodb server
-database: mongodb database
+```
+port: port to listen on (e.g :3000)  
+server: mongodb server (e.g localhost)
+database: mongodb database (e.g escherdb)
+```
 
 ### Run
 
