@@ -75,6 +75,16 @@ func getVote(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, vote)
 }
 
+func getVotes(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	votes, err := dao_.Votes(params["contract"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid Contract Address")
+		return
+	}
+	respondWithJson(w, http.StatusOK, votes)
+}
+
 func getClaim(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	claim, err := dao_.Claim(params["contract"], params["address"])
@@ -83,6 +93,16 @@ func getClaim(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJson(w, http.StatusOK, claim)
+}
+
+func getClaims(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	claims, err := dao_.Claims(params["contract"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid Contract Address")
+		return
+	}
+	respondWithJson(w, http.StatusOK, claims)
 }
 
 func respondWithError(w http.ResponseWriter, code int, msg string) {
@@ -99,7 +119,7 @@ func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 func init() {
 	config_.Read()
 
-  port = config_.Port
+	port = config_.Port
 	dao_.Server = config_.Server
 	dao_.Database = config_.Database
 	dao_.Connect()
@@ -108,14 +128,16 @@ func init() {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/status", getStatus).Methods("GET")
-  r.HandleFunc("/airdrops", getAirdrops).Methods("GET")
-  r.HandleFunc("/proposals", getProposals).Methods("GET")
+	r.HandleFunc("/airdrops", getAirdrops).Methods("GET")
+	r.HandleFunc("/proposals", getProposals).Methods("GET")
 	r.HandleFunc("/airdrop/{contract}", getAirdrop).Methods("GET")
-  r.HandleFunc("/proposal/{contract}", getProposal).Methods("GET")
-  r.HandleFunc("/claim/{contract}/{address}", getClaim).Methods("GET")
-  r.HandleFunc("/vote/{contract}/{address}", getVote).Methods("GET")
+	r.HandleFunc("/proposal/{contract}", getProposal).Methods("GET")
+	r.HandleFunc("/claims/{contract}", getClaims).Methods("GET")
+	r.HandleFunc("/votes/{contract}", getVotes).Methods("GET")
+	r.HandleFunc("/claim/{contract}/{address}", getClaim).Methods("GET")
+	r.HandleFunc("/vote/{contract}/{address}", getVote).Methods("GET")
 
-  handler := cors.Default().Handler(r)
+	handler := cors.Default().Handler(r)
 	if err := http.ListenAndServe(port, handler); err != nil {
 		log.Fatal(err)
 	}

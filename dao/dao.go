@@ -67,8 +67,20 @@ func (e *EscherDAO) Vote(contract string, address string) (Vote, error) {
   return vote, err
 }
 
+func (e *EscherDAO) Votes(contract string) ([]Vote, error) {
+  var votes []Vote
+  err := db.C(VOTES).Find(bson.M{"contract": contract}).All(&votes)
+  return votes, err
+}
+
 func (e *EscherDAO) Claim(contract string, address string) (Claim, error) {
   var claim Claim
   err := db.C(CLAIMS).Find(bson.M{"contract": contract, "address": address}).One(&claim)
   return claim, err
+}
+
+func (e *EscherDAO) Claims(contract string) ([]Claim, error) {
+  var claims []Claim
+  err := db.C(CLAIMS).Find(bson.M{"contract": contract}).All(&claims)
+  return claims, err
 }
