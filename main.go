@@ -69,7 +69,7 @@ func getVote(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	vote, err := dao_.Vote(params["contract"], params["address"])
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid Contract Or Address")
+		respondWithError(w, http.StatusOK, "Invalid Contract Or Address")
 		return
 	}
 	respondWithJson(w, http.StatusOK, vote)
@@ -89,7 +89,7 @@ func getClaim(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	claim, err := dao_.Claim(params["contract"], params["address"])
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid Contract Or Address")
+		respondWithError(w, http.StatusOK, "Invalid Contract Or Address")
 		return
 	}
 	respondWithJson(w, http.StatusOK, claim)
